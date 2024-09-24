@@ -8,8 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 //Zod validation 
 const formValuesSchema = z.object({ 
-  name: z.string().min(6, 'name invalid'),
-  email: z.string().min(6, 'email invalid'),
+  name: z.string().nonempty("Email is required").min(6, 'name invalid'),
+  email: z.string().email("Email is required").min(6, 'email invalid'),
 })
 
 //Using Zod schema as type
@@ -24,12 +24,12 @@ const [Logged, setLogged] = useState(false);
 const form = useForm<FormDatatype>({ resolver: zodResolver(formValuesSchema) });
 
 //Destructuring Form to get individual props
-const {register, handleSubmit, formState:{errors}} = form;
-
+const {register, handleSubmit, formState} = form;
+const {errors} = formState;
 
 // OnSubmit function that later will be used on the form
 const onSubmit: SubmitHandler<FormDatatype> = (data) => {
-  console.log("Working!!!", data.name, data.email); 
+  console.log("Working!!!", data.name, data.email);   
   setLogged(true);
 }
 
@@ -38,7 +38,7 @@ return (
   <div>
     <p>Welcome</p>
   </div>
-{  Logged === false ? <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col w-[400px]  '>
+{  Logged === false ? <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col w-[400px]  ' noValidate>
 
     {/* First Input */}
     <label htmlFor="name">name</label>
